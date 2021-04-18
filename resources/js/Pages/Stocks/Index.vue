@@ -10,6 +10,12 @@
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <div class=" bg-white border-b border-gray-200">
+            <div class="flex flex-row justify-end mr-28">
+              <inertia-link :href="route('stock.create')">
+                    <button class="mx-2 my-2 bg-indigo-700 w-25 transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-5 py-2 text-xs">Create</button>
+
+              </inertia-link>
+            </div>
             <table class="text-left w-full bg-gray-200 text-gray-800">
 		        <thead class="bg-gray-300 flex w-full">
 			        <tr class="flex w-full mb-4">
@@ -35,8 +41,8 @@
                         <td class="p-4 w-1/4">{{item.uom}}</td>
                         <td class="p-4 w-1/4">{{item.updated_at}}</td>
                     </tr>
-
-
+                    
+                
                 </tbody>
             </table>
           </div>
@@ -55,5 +61,11 @@ export default {
   }
   
 };
-
-</script> 
+/*
+import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
+export default {
+  components: {
+    BreezeAuthenticatedLayout,
+  },
+};*/
+</script>

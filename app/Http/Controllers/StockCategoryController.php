@@ -17,8 +17,11 @@ class StockCategoryController extends Controller
     public function index()
     {
         $stock_categories = StockCategory::all();
-        return Inertia::render('StockCategories/Index',
-        ['stock_categories'=>$stock_categories]);
+       
+        return Inertia::render(
+            'StockCategories/Index',
+            ['stock_categories' => $stock_categories]
+        );
     }
 
     /**
@@ -40,7 +43,27 @@ class StockCategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $validate = $request->validate(
+            [
+                'id' => 'required|numeric',
+                'description' => 'required',
+                'type' => 'required',
+                'stock_account' => 'nullable'
+            ]
+        );
+
+        $model = new StockCategory();
+        $model->id = $request->id;
+        $model->description = $request->description;
+        $model->type = $request->type;
+        $model->stock_account = $request->stock_account;
+
+        $model->save();
+
+        return back()->with('success', 'New Stock Category Added!');
     }
+
+    
 
     /**
      * Display the specified resource.

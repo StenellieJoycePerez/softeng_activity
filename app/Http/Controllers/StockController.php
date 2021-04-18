@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stock;
+use App\Models\StockCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +16,9 @@ class StockController extends Controller
      */
     public function index()
     {
-        $stock = Stock::all();
+        $stocks = Stock::all();
         return Inertia::render('Stocks/Index',
-        ['stock'=>$stock]);
+        ['stock'=>$stocks]);
     }
 
     /**
@@ -27,7 +28,11 @@ class StockController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Stock/Create');
+        //
+        
+        $stock_categories = StockCategory::all();
+        return Inertia::render('Stocks/Create',
+        ['stock_categories'=>$stock_categories]);
     }
 
     /**
@@ -38,7 +43,30 @@ class StockController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate(
+            [
+                'id' => 'required|numeric',
+                'description' => 'required',
+                'stock_category_id' => 'required|numeric',
+                'uom' => 'required',
+                'barcode' => 'required|numeric',
+                'discontinued' => 'required',
+                'photo_path' => 'nullable'
+            ]
+        );
+
+        $model = new Stock();
+        $model->id = $request->id;
+        $model->description = $request->description;
+        $model->stock_category_id = $request->stock_category_id;
+        $model->uom = $request->uom;
+        $model->barcode = $request->barcode;
+        $model->discontinued = $request->discontinued;
+        $model->photo_path = $request->photo_path;
+
+        $model->save();
+
+        return back()->with('success', 'New Stock Added!');
     }
 
     /**

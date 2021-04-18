@@ -37,6 +37,7 @@ Route::middleware('auth')
   //  Route::resource('prs', PurchaseRequestController::class);
   Route::resource('sc', StockCategoryController::class);
   Route::resource('stock', StockController::class);
+  
 
 });
 
