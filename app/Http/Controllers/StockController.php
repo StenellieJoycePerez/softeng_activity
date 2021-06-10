@@ -100,7 +100,16 @@ class StockController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validate = $request->validate([
+            'description' => 'required',
+            'stock_category_id' => 'required',
+            'uom' => 'required',
+            'barcode' => 'required',
+            'discontinued' => 'required',
+    ]);
+    $model = Stock::find($id);
+    $model->update($validate);
+    return Redirect::route('stock.index')->with('success', 'Stock Updated');
     }
 
     /**
@@ -112,5 +121,13 @@ class StockController extends Controller
     public function destroy($id)
     {
         //
+        try{
+            Stock::find($id)->delete();
+            return Redirect::route('stock.index')->with('success', 'Stock deleted.');
+           }catch (\Exception$e) {
+         
+            return Redirect::route('stock.index')->with('error', $e->getMessage());
+    
+        }
     }
 }

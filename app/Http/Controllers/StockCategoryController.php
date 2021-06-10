@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StockCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Redirect;
 
 class StockCategoryController extends Controller
 {
@@ -16,12 +16,13 @@ class StockCategoryController extends Controller
      */
     public function index()
     {
+
+        //retrieve all records
         $stock_categories = StockCategory::all();
-       
-        return Inertia::render(
-            'StockCategories/Index',
-            ['stock_categories' => $stock_categories]
-        );
+
+        //then display using the Index view
+        return Inertia::render('StockCategories/Index',
+            ['stock_categories' => $stock_categories]);
     }
 
     /**
@@ -31,7 +32,8 @@ class StockCategoryController extends Controller
      */
     public function create()
     {
-       return Inertia::render('StockCategories/Create');
+        //display a blank form
+        return Inertia::render('StockCategories/Create');
     }
 
     /**
@@ -42,15 +44,19 @@ class StockCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validate = $request->validate(
+
             [
-                'id' => 'required|numeric',
+                'id' => 'required|numeric|unique:stock_categories',
                 'description' => 'required',
                 'type' => 'required',
-                'stock_account' => 'nullable'
+                'stock_account' => 'nullable',
+
             ]
+
         );
+        //if everything is ok then the next line of codes will be executed
+        //otherwise it will return an object called <<errors> that can be  
 
         $model = new StockCategory();
         $model->id = $request->id;
@@ -60,10 +66,9 @@ class StockCategoryController extends Controller
 
         $model->save();
 
-        return back()->with('success', 'New Stock Category Added!');
-    }
+        return redirect()->back()->with('success', 'New Stock Category Added!');
 
-    
+    }
 
     /**
      * Display the specified resource.
@@ -73,7 +78,10 @@ class StockCategoryController extends Controller
      */
     public function show($id)
     {
-        //
+       
+        $model =StockCategory::find($id);
+
+        return Inertia::render('StockCategories/View',['model'=>$model]);
     }
 
     /**
@@ -84,7 +92,7 @@ class StockCategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+       
     }
 
     /**
@@ -96,7 +104,24 @@ class StockCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validate = $request->validate(
+
+            [
+               
+                'description' => 'required',
+                'type' => 'required',
+                'stock_account' => 'nullable',
+
+            ]
+
+        );
+
+
+        $model = StockCategory::find($id);
+
+        $model->update($validate);
+    
+        return Redirect::route('sc.index')->with("Success", "Stock Categorty Updated");
     }
 
     /**
@@ -107,6 +132,15 @@ class StockCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        //use try since an error migth occur
+       try{
+        StockCategory::find($id)->delete();
+        return Redirect::route('sc.index')->with('success', 'Stock Category deleted.');
+       }catch (\Exception$e) {
+     
+        return Redirect::route('sc.index')->with('error', $e->getMessage());
+
+    }
     }
 }
